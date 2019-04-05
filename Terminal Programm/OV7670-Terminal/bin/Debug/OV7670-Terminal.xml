@@ -1,0 +1,292 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OV7670-Terminal</name>
+    </assembly>
+    <members>
+        <member name="M:OV7670_Terminal.ColorFormat.convertRGB565toArray565(System.Drawing.Color)">
+            <summary>
+            this function converts a Color with RGB565Values to an array with the two necessary Bytes.
+            </summary>
+            <param name="RGB565Color"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OV7670_Terminal.ColorFormat.convertArray565ToRGB565(System.Byte[])">
+            <summary>
+            This function converts an array in RGB565 format with the length 2 into a Color with RGB565 value
+            
+            </summary>
+            <param name="ColorArray"></param>
+            The Color Array with the length 2 in RGB565 Format
+            <returns>name="newColor"</returns>
+            returns the Color format with a spectrum from 0 to 31 in one Color
+        </member>
+        <member name="M:OV7670_Terminal.ColorFormat.convertArray888ToRGB888(System.Byte[])">
+            <summary>
+            
+            </summary>
+            <param name="ColorArray"></param>
+            <returns></returns>
+        </member>
+        <member name="F:OV7670_Terminal.Forms.ComparePictures.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Forms.ComparePictures.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:OV7670_Terminal.Forms.ComparePictures.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:OV7670_Terminal.Form_Terminal.Camera1RxDataSniffedCallback">
+            <summary>
+            Eventhandler which protocolls the data received on the Comport
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:OV7670_Terminal.Form_Terminal.Camera1_TxDataSniffed(System.Object,OV7670_Terminal.ComTransmissionEventArgs)">
+            <summary>
+            Eventhandler which protocolls the data sent on the Comport
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:OV7670_Terminal.Form_Terminal.Ov7670_SccbRegisterWasChangedCallback">
+            <summary>
+            Eventhandler, when the SccbRegister of the Camera were updated
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:OV7670_Terminal.Form_Terminal.Camera1_ErrorOccured(System.Object,OV7670_Terminal.ErrorEventArgs)">
+            <summary>
+            Eventfollower to display ErrorMessages on the Terminal
+            </summary>
+            <param name="sender"></param>
+            <param name="e">
+            Class which includes the Errorcode and the ErrorMessage
+            </param>
+        </member>
+        <member name="M:OV7670_Terminal.Form_Terminal.controllerGetCameraStatus">
+            <summary>
+            This function controlls the Programmstatus 60. In this status, all "status register" of the OV7670 will be read.
+            After all, in the byte array StatusRegisterList contained Register are read, the Userform get updated
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Form_Terminal.readTextBox_ManualSettingsAdjustment(System.Windows.Forms.TextBox)">
+            <summary>
+            This function check the chosen Format on the Form
+            </summary>
+            <param name="myTextboxToRead"></param>
+            <returns>Returns the RegisterValue format oneByte format with different Methods</returns>
+        </member>
+        <member name="M:OV7670_Terminal.Form_Terminal.openSettingsFile(System.Windows.Forms.ListView,System.Int32)">
+            <summary>
+            This functions loads the settings from a file to a Listbox
+            </summary>
+            <param name="ListViewToShow"></param>
+            <param name="type"></param>
+            Format in File. 1: "0x11;0x12" 2: "{ 0x11, 0x12 },"  
+            <returns>true if success</returns>
+        </member>
+        <member name="M:OV7670_Terminal.Form_Terminal.cmd_getCameraStatus_Click(System.Object,System.EventArgs)">
+            <summary>
+            This function will request the current status not only from the software object, but also from the camera hardware.
+            Afterwards the form is updated.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="F:OV7670_Terminal.Form_Terminal.components">
+            <summary>
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Form_Terminal.Dispose(System.Boolean)">
+            <summary>
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:OV7670_Terminal.Form_Terminal.InitializeComponent">
+            <summary>
+            Erforderliche Methode für die Designerunterstützung.
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.ImageFile.AddLineToImage(OV7670_Terminal.PictureRow,System.Int32)">
+            <summary>
+            This is the prefered function to add a complete row to an image.
+            </summary>
+            <param name="pictureRow"></param>
+            an object that includes all information of one pixelrow
+            <param name="row"></param>
+            certain row number which should be added
+            <returns></returns>
+            0: everything worked out proper
+            -1: xResolution of image and of the Pixelrow do not match
+            -2: the row number do not fit to the image
+        </member>
+        <member name="M:OV7670_Terminal.ImageFile.AddLineToImage(OV7670_Terminal.PictureRow)">
+            <summary>
+            This is the prefered function to add a complete row to an image. The rowCounter isincreases automaticly after adding a row 
+            </summary>
+            <param name="pictureRow"></param>
+            an object that includes all information of one pixelrow
+            <returns></returns>
+            0: everything worked out proper
+            -1: xResolution of image and of the Pixelrow do not match
+            -2: to many Lines would be added to the image
+        </member>
+        <member name="T:OV7670_Terminal.RegisterEventArgs">
+            <summary>
+            Eventargs which contain the address and the value of an Register
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.RegisterEventArgs.#ctor(OV7670_Terminal.RegisterValue,OV7670_Terminal.RegisterValue)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="address">the address of a Register</param>
+            <param name="value">the value of a Register</param>
+        </member>
+        <member name="P:OV7670_Terminal.RegisterEventArgs.Address">
+            <summary>
+            Address of the Register
+            </summary>
+        </member>
+        <member name="P:OV7670_Terminal.RegisterEventArgs.Value">
+            <summary>
+            Value of the Register
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Ov7670Device.ReceiveReadRegister">
+            <summary>
+            This function read two Bytes from the buffer. 1: Register Address 2:Register value
+            Because this funciton is used in more than one Programstatus it is outsourced of the switch case statement
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Ov7670Device.UpdateOutputFormat">
+            <summary>
+            the relevant Register of the Registerlist 0x12 will be masked and the _ouPutResolutionFormat is set.
+            Note that this function do not get refreshed data from the hardware camera. It is just an internal object update class.
+            To be sure to get the latest status of the camera you need to read the 0x12 register from the camera
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Ov7670Device.updateColorFormat">
+            <summary>
+            the relevant Register 0x12 for the color format will be masked and the _outPutColorFormat is set.
+            Note that this function do not get refreshed data from the hardware camera. It is just an internal object update class.
+            To be sure to get the latest status of the camera you need to read the 0x12 register from the camera
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Ov7670Device.SetColorFormatManualy(OV7670_Terminal.EnumColorFormat)">
+            <summary>
+            With this function, the colorformat can be set manually without reading the registers.
+            Caution! This operations should be performed after the registers are read, because the
+            register read will overwrite it.
+            </summary>
+            <param name="_setColorformat"></param>
+        </member>
+        <member name="M:OV7670_Terminal.Ov7670Device.SetResolutionFormatManually(OV7670_Terminal.EnumResolutionFormat)">
+            <summary>
+            With this function, the resolutionformat can be set manually without reading the registers.
+            Caution! This operations should be performed after the registers are read, because the
+            register read will overwrite it.
+            </summary>
+            <param name="_setResolutionFormat"></param>
+        </member>
+        <member name="M:OV7670_Terminal.Ov7670Device.updateTestPattern">
+            <summary>
+            This function checks, which Testpattern is applied to the camera. The Register 0x70 and 0x71 needs to be evaluated for this:
+            0x70[7],0x71[7]: (0,0) no test output, (0,1) Shifting1 , (1,0) 8-Bar Colorbar, (1,1) Fade to gray color bar
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Ov7670Device.updateDspColorBar">
+            <summary>
+            This function checks the necessary bit of the register 0x42 and determines if the ColorBar of the DSP is enabled or disabled
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Ov7670Device.initializeCamera">
+            <summary>
+            This function sends a command to the camera, which will perform the initialisation of the camera again.
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Ov7670Device.startSendResColFormatToCamera">
+            <summary>
+            This function starts a sequence of a communication between the Terminal and the Camera to
+            synch the width, the height and the Bytes per Pixels for the read out of an Image.
+            All in all the programmstati 4, 5 and 6 will be exectued.
+            
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Ov7670Device.syncBetweenCameraAndTerminal">
+            <summary>
+            this function performs all for syncronisation necessary communication between Camera and Terminal
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Ov7670Device.UpdatePicture">
+            <summary>
+            This function does the following:
+            -reset the RowCount of the OV7670 device
+            - resets the RowCount of the image
+            - sets the resoltion of the _picture which is afterwards filled
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.Ov7670Device.getHighAndLowByte(System.Int32)">
+             <summary>
+             This function splits an 2Byte integer into the MsB and LsB.
+             </summary>
+             <param name="numberToSplit">
+            The integer to split
+             </param>
+             <returns>
+             returns a Bytearray with 0: LsB and 1: MsB</returns>
+        </member>
+        <member name="M:OV7670_Terminal.PictureRow.ResetPictureRow">
+            <summary>
+            clears the List of Pixels and resets the counter
+            </summary>
+        </member>
+        <member name="M:OV7670_Terminal.PictureRow.AddPixel(System.Drawing.Color)">
+            <summary>
+            add a Pixel to the PictureRow and rise the counter by one
+            </summary>
+            <param name="pixelColor"></param>
+            Color of the Pixel, must be in accordance to the ColorFormat of the Pixelrow
+            <returns></returns>
+            0: everything okay
+            -1: unknown ColorFormat
+            -2: more Pixels then expacted
+        </member>
+        <member name="M:OV7670_Terminal.Program.Main">
+            <summary>
+            Der Haupteinstiegspunkt für die Anwendung.
+            </summary>
+        </member>
+        <member name="T:OV7670_Terminal.Properties.Resources">
+            <summary>
+              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+            </summary>
+        </member>
+        <member name="P:OV7670_Terminal.Properties.Resources.ResourceManager">
+            <summary>
+              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+            </summary>
+        </member>
+        <member name="P:OV7670_Terminal.Properties.Resources.Culture">
+            <summary>
+              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+              Ressourcenlookups, die diese stark typisierte Ressourcenklasse verwenden.
+            </summary>
+        </member>
+    </members>
+</doc>

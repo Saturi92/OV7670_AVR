@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="OV7670_Terminal.ColorFormat">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAIEAAgAAAAAAAAACAAAAAQEAACAhQIAgAAAAAAA=</HashCode>
+      <FileName>ColorFormat.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OV7670_Terminal.ImageFile">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAIAaAAAQAAAACAAAAAAAJABIAAAAAAEAAA=</HashCode>
+      <FileName>ImageFile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OV7670_Terminal.Ov7670Device">
+    <Position X="4.75" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>kVAQB0EoBgDBEAAkhgACyIwdgzoExghBiFCA4MUEIQ8=</HashCode>
+      <FileName>Ov7670Device.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OV7670_Terminal.Program" Collapsed="true">
+    <Position X="14" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OV7670_Terminal.RegisterValue">
+    <Position X="11.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAACACAAAhAAAAAAAAAAAAAAkQACIgAA=</HashCode>
+      <FileName>RegisterValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OV7670_Terminal.SCCB_Interface" Collapsed="true">
+    <Position X="14" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAgAAAAAQAAAAAAAAAAAAAABAAAAAQAAYAAAAE=</HashCode>
+      <FileName>SCCB-Interface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OV7670_Terminal.SccbRegister">
+    <Position X="11.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AYAAAAAAAAAAAAAEAAAAAoAABAAAAAAAAAAgEAAAAAA=</HashCode>
+      <FileName>SccbRegister.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OV7670_Terminal.Form_Terminal">
+    <Position X="0.75" Y="0.5" Width="3.25" />
+    <NestedTypes>
+      <Delegate Name="OV7670_Terminal.Form_Terminal.Camera1ProgrammStatusChangedCallback" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Forms\Form_Terminal.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="OV7670_Terminal.Form_Terminal.Camera1RxDataSniffedCallback" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Forms\Form_Terminal.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="OV7670_Terminal.Form_Terminal.Camera1RegisterWrittenCallback" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Forms\Form_Terminal.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="OV7670_Terminal.Form_Terminal.Ov7670_SccbRegisterWasChangedCallback" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Forms\Form_Terminal.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="OV7670_Terminal.Form_Terminal.Camera1RowReceivedCallback" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Forms\Form_Terminal.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="OV7670_Terminal.Form_Terminal.Camera1_TxDataSniffedCallback" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Forms\Form_Terminal.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="OV7670_Terminal.Form_Terminal.Camera1_ErrorOccuredCallback" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Forms\Form_Terminal.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="OV7670_Terminal.Form_Terminal.AddDataDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Forms\Form_Terminal.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="OV7670_Terminal.Form_Terminal.Camera1DataProceedCallback" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Forms\Form_Terminal.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>dyIyNbk5w7eGrhd2XzyRyH5+8OK/FEDvXuCw2MT1T+M=</HashCode>
+      <FileName>Forms\Form_Terminal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="OV7670_Terminal.EnumResolutionFormat" Collapsed="true">
+    <Position X="14" Y="2.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAARIAAAAAAAAAAAAAAAAAAAAAAJAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Ov7670Device.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="OV7670_Terminal.EnumColorFormat">
+    <Position X="14" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAEBEAAAQAAAQAAAIAA=</HashCode>
+      <FileName>Ov7670Device.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
