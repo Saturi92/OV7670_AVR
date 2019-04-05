@@ -3,7 +3,7 @@ Compatibility=1.1 or later
 Compiled file=OV7670_Terminal_help.chm
 Contents file=Table of Contents.hhc
 Display compile progress=No
-Index file=Index.hhk
+Index file=Index.html
 Language=0x407 Deutsch (Deutschland)
 Title=OV7670 Help
 
