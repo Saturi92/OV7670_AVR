@@ -174,6 +174,7 @@
             this.hilfeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
             this.lbl_PictureDescription = new System.Windows.Forms.Label();
+            this.GrBo_Log = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.PiBo_LeftPicture)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.GrBo_ComPort.SuspendLayout();
@@ -201,6 +202,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.PiBo_ImageBox)).BeginInit();
             this.GrBo_Camera_Status.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.GrBo_Log.SuspendLayout();
             this.SuspendLayout();
             // 
             // PiBo_LeftPicture
@@ -225,9 +227,9 @@
             this.ToSt_Progress,
             this.ToStSt_Connection,
             this.ToStStLbl_Programmstatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 656);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 647);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1114, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(935, 22);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -454,21 +456,21 @@
             this.TabControl.Location = new System.Drawing.Point(6, 31);
             this.TabControl.Name = "TabControl";
             this.TabControl.SelectedIndex = 0;
-            this.TabControl.Size = new System.Drawing.Size(589, 622);
+            this.TabControl.Size = new System.Drawing.Size(613, 612);
             this.TabControl.TabIndex = 11;
             // 
             // TaPa_Settings
             // 
+            this.TaPa_Settings.Controls.Add(this.GrBo_Log);
             this.TaPa_Settings.Controls.Add(this.GrBo_LoadedSettings);
             this.TaPa_Settings.Controls.Add(this.GrBo_DeviceSettings);
             this.TaPa_Settings.Controls.Add(this.cmd_compareLists);
             this.TaPa_Settings.Controls.Add(this.groupBox3);
-            this.TaPa_Settings.Controls.Add(this.RiTeBo_history);
             this.TaPa_Settings.Controls.Add(this.GrBo_ComPort);
             this.TaPa_Settings.Location = new System.Drawing.Point(4, 22);
             this.TaPa_Settings.Name = "TaPa_Settings";
             this.TaPa_Settings.Padding = new System.Windows.Forms.Padding(3);
-            this.TaPa_Settings.Size = new System.Drawing.Size(581, 596);
+            this.TaPa_Settings.Size = new System.Drawing.Size(605, 586);
             this.TaPa_Settings.TabIndex = 1;
             this.TaPa_Settings.Text = "Settings";
             this.TaPa_Settings.UseVisualStyleBackColor = true;
@@ -479,9 +481,9 @@
             this.GrBo_LoadedSettings.Controls.Add(this.cmd_OpenFromStruct);
             this.GrBo_LoadedSettings.Controls.Add(this.cmd_WriteAllRegister);
             this.GrBo_LoadedSettings.Controls.Add(this.cmd_loadSCCBSettings);
-            this.GrBo_LoadedSettings.Location = new System.Drawing.Point(461, 6);
+            this.GrBo_LoadedSettings.Location = new System.Drawing.Point(476, 6);
             this.GrBo_LoadedSettings.Name = "GrBo_LoadedSettings";
-            this.GrBo_LoadedSettings.Size = new System.Drawing.Size(112, 433);
+            this.GrBo_LoadedSettings.Size = new System.Drawing.Size(123, 433);
             this.GrBo_LoadedSettings.TabIndex = 34;
             this.GrBo_LoadedSettings.TabStop = false;
             this.GrBo_LoadedSettings.Text = "Loaded Settings";
@@ -494,7 +496,7 @@
             this.LiVi_LoadedSettings.LabelEdit = true;
             this.LiVi_LoadedSettings.Location = new System.Drawing.Point(6, 17);
             this.LiVi_LoadedSettings.Name = "LiVi_LoadedSettings";
-            this.LiVi_LoadedSettings.Size = new System.Drawing.Size(94, 292);
+            this.LiVi_LoadedSettings.Size = new System.Drawing.Size(110, 290);
             this.LiVi_LoadedSettings.TabIndex = 32;
             this.LiVi_LoadedSettings.UseCompatibleStateImageBehavior = false;
             this.LiVi_LoadedSettings.View = System.Windows.Forms.View.Details;
@@ -513,7 +515,7 @@
             // 
             this.cmd_OpenFromStruct.Location = new System.Drawing.Point(6, 400);
             this.cmd_OpenFromStruct.Name = "cmd_OpenFromStruct";
-            this.cmd_OpenFromStruct.Size = new System.Drawing.Size(94, 23);
+            this.cmd_OpenFromStruct.Size = new System.Drawing.Size(110, 23);
             this.cmd_OpenFromStruct.TabIndex = 29;
             this.cmd_OpenFromStruct.Text = "open from struct";
             this.cmd_OpenFromStruct.UseVisualStyleBackColor = true;
@@ -523,7 +525,7 @@
             // 
             this.cmd_WriteAllRegister.Location = new System.Drawing.Point(6, 329);
             this.cmd_WriteAllRegister.Name = "cmd_WriteAllRegister";
-            this.cmd_WriteAllRegister.Size = new System.Drawing.Size(94, 36);
+            this.cmd_WriteAllRegister.Size = new System.Drawing.Size(110, 36);
             this.cmd_WriteAllRegister.TabIndex = 31;
             this.cmd_WriteAllRegister.Text = "Write Device Settings";
             this.cmd_WriteAllRegister.UseVisualStyleBackColor = true;
@@ -533,7 +535,7 @@
             // 
             this.cmd_loadSCCBSettings.Location = new System.Drawing.Point(6, 371);
             this.cmd_loadSCCBSettings.Name = "cmd_loadSCCBSettings";
-            this.cmd_loadSCCBSettings.Size = new System.Drawing.Size(94, 23);
+            this.cmd_loadSCCBSettings.Size = new System.Drawing.Size(110, 23);
             this.cmd_loadSCCBSettings.TabIndex = 29;
             this.cmd_loadSCCBSettings.Text = "open from csv";
             this.cmd_loadSCCBSettings.UseVisualStyleBackColor = true;
@@ -548,7 +550,7 @@
             this.GrBo_DeviceSettings.Controls.Add(this.cmd_SafeToStruct);
             this.GrBo_DeviceSettings.Location = new System.Drawing.Point(348, 6);
             this.GrBo_DeviceSettings.Name = "GrBo_DeviceSettings";
-            this.GrBo_DeviceSettings.Size = new System.Drawing.Size(107, 433);
+            this.GrBo_DeviceSettings.Size = new System.Drawing.Size(122, 433);
             this.GrBo_DeviceSettings.TabIndex = 33;
             this.GrBo_DeviceSettings.TabStop = false;
             this.GrBo_DeviceSettings.Text = "Device Settings";
@@ -561,7 +563,7 @@
             this.LiVi_DeviceSettings.LabelEdit = true;
             this.LiVi_DeviceSettings.Location = new System.Drawing.Point(6, 17);
             this.LiVi_DeviceSettings.Name = "LiVi_DeviceSettings";
-            this.LiVi_DeviceSettings.Size = new System.Drawing.Size(94, 292);
+            this.LiVi_DeviceSettings.Size = new System.Drawing.Size(110, 290);
             this.LiVi_DeviceSettings.TabIndex = 32;
             this.LiVi_DeviceSettings.UseCompatibleStateImageBehavior = false;
             this.LiVi_DeviceSettings.View = System.Windows.Forms.View.Details;
@@ -591,7 +593,7 @@
             this.cmd_ReadAllRegister.Enabled = false;
             this.cmd_ReadAllRegister.Location = new System.Drawing.Point(6, 329);
             this.cmd_ReadAllRegister.Name = "cmd_ReadAllRegister";
-            this.cmd_ReadAllRegister.Size = new System.Drawing.Size(94, 36);
+            this.cmd_ReadAllRegister.Size = new System.Drawing.Size(110, 36);
             this.cmd_ReadAllRegister.TabIndex = 25;
             this.cmd_ReadAllRegister.Text = "Read Device Settings";
             this.cmd_ReadAllRegister.UseVisualStyleBackColor = true;
@@ -601,7 +603,7 @@
             // 
             this.cmd_SaveSccbSettings.Location = new System.Drawing.Point(6, 371);
             this.cmd_SaveSccbSettings.Name = "cmd_SaveSccbSettings";
-            this.cmd_SaveSccbSettings.Size = new System.Drawing.Size(94, 23);
+            this.cmd_SaveSccbSettings.Size = new System.Drawing.Size(110, 23);
             this.cmd_SaveSccbSettings.TabIndex = 28;
             this.cmd_SaveSccbSettings.Text = "safe to csv";
             this.cmd_SaveSccbSettings.UseVisualStyleBackColor = true;
@@ -611,7 +613,7 @@
             // 
             this.cmd_SafeToStruct.Location = new System.Drawing.Point(6, 400);
             this.cmd_SafeToStruct.Name = "cmd_SafeToStruct";
-            this.cmd_SafeToStruct.Size = new System.Drawing.Size(94, 23);
+            this.cmd_SafeToStruct.Size = new System.Drawing.Size(110, 23);
             this.cmd_SafeToStruct.TabIndex = 28;
             this.cmd_SafeToStruct.Text = "safe to struct";
             this.cmd_SafeToStruct.UseVisualStyleBackColor = true;
@@ -619,8 +621,10 @@
             // 
             // cmd_compareLists
             // 
+            this.helpProvider1.SetHelpString(this.cmd_compareLists, "Test");
             this.cmd_compareLists.Location = new System.Drawing.Point(258, 416);
             this.cmd_compareLists.Name = "cmd_compareLists";
+            this.helpProvider1.SetShowHelp(this.cmd_compareLists, true);
             this.cmd_compareLists.Size = new System.Drawing.Size(84, 23);
             this.cmd_compareLists.TabIndex = 28;
             this.cmd_compareLists.Text = "compare Lists";
@@ -861,9 +865,9 @@
             // 
             // RiTeBo_history
             // 
-            this.RiTeBo_history.Location = new System.Drawing.Point(17, 445);
+            this.RiTeBo_history.Location = new System.Drawing.Point(8, 19);
             this.RiTeBo_history.Name = "RiTeBo_history";
-            this.RiTeBo_history.Size = new System.Drawing.Size(556, 138);
+            this.RiTeBo_history.Size = new System.Drawing.Size(579, 111);
             this.RiTeBo_history.TabIndex = 26;
             this.RiTeBo_history.Text = "";
             this.RiTeBo_history.TextChanged += new System.EventHandler(this.RiTeBo_history_TextChanged);
@@ -878,7 +882,7 @@
             this.TaPa_Image.Location = new System.Drawing.Point(4, 22);
             this.TaPa_Image.Name = "TaPa_Image";
             this.TaPa_Image.Padding = new System.Windows.Forms.Padding(3);
-            this.TaPa_Image.Size = new System.Drawing.Size(809, 596);
+            this.TaPa_Image.Size = new System.Drawing.Size(581, 596);
             this.TaPa_Image.TabIndex = 0;
             this.TaPa_Image.Text = "_picture";
             this.TaPa_Image.UseVisualStyleBackColor = true;
@@ -1039,7 +1043,7 @@
             this.TabPage_Capture.Controls.Add(this.groupBox1);
             this.TabPage_Capture.Location = new System.Drawing.Point(4, 22);
             this.TabPage_Capture.Name = "TabPage_Capture";
-            this.TabPage_Capture.Size = new System.Drawing.Size(809, 596);
+            this.TabPage_Capture.Size = new System.Drawing.Size(581, 596);
             this.TabPage_Capture.TabIndex = 2;
             this.TabPage_Capture.Text = "Caputre Image";
             this.TabPage_Capture.UseVisualStyleBackColor = true;
@@ -1176,7 +1180,7 @@
             this.TaPa_manu_mode.Controls.Add(this.groupBox7);
             this.TaPa_manu_mode.Location = new System.Drawing.Point(4, 22);
             this.TaPa_manu_mode.Name = "TaPa_manu_mode";
-            this.TaPa_manu_mode.Size = new System.Drawing.Size(809, 596);
+            this.TaPa_manu_mode.Size = new System.Drawing.Size(581, 596);
             this.TaPa_manu_mode.TabIndex = 3;
             this.TaPa_manu_mode.Text = "Manueller Modus";
             this.TaPa_manu_mode.UseVisualStyleBackColor = true;
@@ -1366,7 +1370,7 @@
             this.tabPage1.Controls.Add(this.label13);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(809, 596);
+            this.tabPage1.Size = new System.Drawing.Size(581, 596);
             this.tabPage1.TabIndex = 4;
             this.tabPage1.Text = "Sniffer";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -1586,7 +1590,7 @@
             this.hilfeToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1114, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(935, 24);
             this.menuStrip1.TabIndex = 29;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -1622,13 +1626,23 @@
             this.lbl_PictureDescription.TabIndex = 2;
             this.lbl_PictureDescription.Text = "0x0 0 bpp";
             // 
+            // GrBo_Log
+            // 
+            this.GrBo_Log.Controls.Add(this.RiTeBo_history);
+            this.GrBo_Log.Location = new System.Drawing.Point(6, 445);
+            this.GrBo_Log.Name = "GrBo_Log";
+            this.GrBo_Log.Size = new System.Drawing.Size(593, 136);
+            this.GrBo_Log.TabIndex = 35;
+            this.GrBo_Log.TabStop = false;
+            this.GrBo_Log.Text = "History";
+            // 
             // Form_Terminal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-            this.ClientSize = new System.Drawing.Size(1114, 678);
+            this.ClientSize = new System.Drawing.Size(935, 669);
             this.Controls.Add(this.lbl_PictureDescription);
             this.Controls.Add(this.cmd_Initialisierung);
             this.Controls.Add(this.PiBo_ImageBox);
@@ -1690,6 +1704,7 @@
             this.GrBo_Camera_Status.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.GrBo_Log.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1842,6 +1857,7 @@
         private System.Windows.Forms.ColumnHeader Offline_Value;
         private System.Windows.Forms.GroupBox GrBo_DeviceSettings;
         private System.Windows.Forms.GroupBox GrBo_LoadedSettings;
+        private System.Windows.Forms.GroupBox GrBo_Log;
     }
 }
 

@@ -302,6 +302,7 @@ namespace OV7670_Terminal
             else
             {
                 setStatus("Picture received completly");
+                Camera1.RxDataSnifferComplete += Camera1RxDataSniffed;
             }
         }
 
@@ -384,8 +385,8 @@ namespace OV7670_Terminal
             Camera1.SccbRegisterWasChanged += Camera1_SccbRegisterWasChanged;
             Camera1.ProgrammStatusChanged += Camera1_ProgrammStatusChanged;
             Camera1.RegisterWriteComplete += Camera1_RegisterWritten;
-            //Camera1.RxDataSnifferComplete += Camera1RxDataSniffed;
-            //Camera1.txDataSnifferComplete += Camera1_TxDataSniffed;
+            Camera1.RxDataSnifferComplete += Camera1RxDataSniffed;
+            Camera1.txDataSnifferComplete += Camera1_TxDataSniffed;
             Camera1.ErrorOccured += Camera1_ErrorOccured;
             Camera1.PictureFormatChanged += Camera1_PictureFormatChanged;
             Camera1.PictureComplete += Camera1_PictureComplete;
@@ -1117,6 +1118,7 @@ namespace OV7670_Terminal
                                 ListViewToShow.Items.Add(nItem);
                                 break;
                             case 2:
+
                                 Elements = Lines[i].Split(',');
                                 Elements[0] = Elements[0].Remove(0, 2);
                                 Elements[1] = Elements[1].Remove(0, 1);
@@ -1124,6 +1126,7 @@ namespace OV7670_Terminal
                                 ListViewItem nItem2 = new ListViewItem();
                                 nItem2.Text = Elements[0];
                                 nItem2.SubItems.Add(Elements[1]);
+                                ListViewToShow.Items.Add(nItem2);
                                 break;
                             default:
                                 break;
@@ -1238,6 +1241,7 @@ namespace OV7670_Terminal
 
         private void loadListViewToWriteList(ListView ListViewToRead, Ov7670Device CameraToWrite)
         {
+            Camera1.clearRegisterToWrite();
             foreach (ListViewItem _item in ListViewToRead.Items)
             {
                 RegisterValue _tempAddress = new RegisterValue();
@@ -1359,6 +1363,7 @@ namespace OV7670_Terminal
             {
                 //configure the Statusbar
                 toolStripProgressBar1.Maximum = Camera1.StatusRegisterList.Length;
+                toolStripProgressBar1.Value = 0;
                 //reset the read buffer in case of unused data
                 Camera1.resetReceivedData();
                 //reset the readcounter, which will count how many bytes are already received and processed
@@ -1517,6 +1522,9 @@ namespace OV7670_Terminal
         {
             if (Camera1.isConnected())
             {
+                //stop the sniffer event
+                Camera1.RxDataSnifferComplete -= Camera1RxDataSniffed;
+                
                 Camera1.Programstatus = 2;
                 Camera1.ReadCounter = 0;
                 Camera1.UpdatePicture();

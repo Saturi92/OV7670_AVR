@@ -497,14 +497,14 @@ namespace OV7670_Terminal
 
         private void BuildPicture()
         {
-            if (_receivedData.Count >= ((_picture.BytesPerPixel * _picture.ResolutionX) + 2))
+            if (_receivedData.Count >= (_picture.BytesPerPixel * _picture.ResolutionX))
             {
                 var _newPictureRow = BuildRow();
                 _picture.AddLineToImage(_newPictureRow, _rowCount);
                 OnPictureRowReceived();
                 _rowCount++;
                 //check if last Line is read
-                if (_rowCount == (_picture.ResolutionY-1))
+                if (_rowCount == (_picture.ResolutionY))
                 {
                     Programstatus = -1;
                     OnPictureComplete();
@@ -939,7 +939,6 @@ namespace OV7670_Terminal
         //Take _picture
         public void TakePicture ()
         {
-            _rowCount = 0;
             _picture.ResetRowCounter();
             var myBuffer = new byte[3];
             myBuffer[0] = 0x03;
@@ -981,6 +980,11 @@ namespace OV7670_Terminal
         {
             _RegisterToWrite.Enqueue(RegisterToAdd);
         }
+        public void clearRegisterToWrite()
+        {
+            _RegisterToWrite.Clear();
+        }
+
 
         public void writeAllRegister()
         {

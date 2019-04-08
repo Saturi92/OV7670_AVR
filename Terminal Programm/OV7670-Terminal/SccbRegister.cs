@@ -54,7 +54,7 @@ namespace OV7670_Terminal
 
         public string ToStructHex()
         {
-            var output ="{ "+ "0x" + MyAddress.toStringHex() + ", " + "0x" + Value.toStringHex();
+            var output ="{ "+ "0x" + MyAddress.toStringHex() + ", " + "0x" + Value.toStringHex()+" },";
             return output;
         }
 

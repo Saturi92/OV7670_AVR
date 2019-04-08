@@ -10,3 +10,15 @@ D:\David\Dokumente\Visual Studio 2017\Projects\OV7670-Terminal\OV7670-Terminal\o
 D:\David\Dokumente\Visual Studio 2017\Projects\OV7670-Terminal\OV7670-Terminal\obj\Release\OV7670-Terminal.exe
 D:\David\Dokumente\Visual Studio 2017\Projects\OV7670-Terminal\OV7670-Terminal\obj\Release\OV7670-Terminal.pdb
 D:\David\Dokumente\Visual Studio 2017\Projects\OV7670-Terminal\OV7670-Terminal\bin\Release\OV7670_Terminal_help.chm
+D:\OneDrive\Mikrokontroller-Projekte\Git-Hub-Repositorys\Zusammen\OV7670_AVR\Terminal Programm\OV7670-Terminal\bin\Release\OV7670_Terminal_help.chm
+D:\OneDrive\Mikrokontroller-Projekte\Git-Hub-Repositorys\Zusammen\OV7670_AVR\Terminal Programm\OV7670-Terminal\bin\Release\OV7670-Terminal.exe.config
+D:\OneDrive\Mikrokontroller-Projekte\Git-Hub-Repositorys\Zusammen\OV7670_AVR\Terminal Programm\OV7670-Terminal\bin\Release\OV7670-Terminal.exe
+D:\OneDrive\Mikrokontroller-Projekte\Git-Hub-Repositorys\Zusammen\OV7670_AVR\Terminal Programm\OV7670-Terminal\bin\Release\OV7670-Terminal.pdb
+D:\OneDrive\Mikrokontroller-Projekte\Git-Hub-Repositorys\Zusammen\OV7670_AVR\Terminal Programm\OV7670-Terminal\obj\Release\OV7670-Terminal.csprojAssemblyReference.cache
+D:\OneDrive\Mikrokontroller-Projekte\Git-Hub-Repositorys\Zusammen\OV7670_AVR\Terminal Programm\OV7670-Terminal\obj\Release\OV7670_Terminal.Forms.ComparePictures.resources
+D:\OneDrive\Mikrokontroller-Projekte\Git-Hub-Repositorys\Zusammen\OV7670_AVR\Terminal Programm\OV7670-Terminal\obj\Release\OV7670_Terminal.Form_Terminal.resources
+D:\OneDrive\Mikrokontroller-Projekte\Git-Hub-Repositorys\Zusammen\OV7670_AVR\Terminal Programm\OV7670-Terminal\obj\Release\OV7670_Terminal.Properties.Resources.resources
+D:\OneDrive\Mikrokontroller-Projekte\Git-Hub-Repositorys\Zusammen\OV7670_AVR\Terminal Programm\OV7670-Terminal\obj\Release\OV7670-Terminal.csproj.GenerateResource.cache
+D:\OneDrive\Mikrokontroller-Projekte\Git-Hub-Repositorys\Zusammen\OV7670_AVR\Terminal Programm\OV7670-Terminal\obj\Release\OV7670-Terminal.csproj.CoreCompileInputs.cache
+D:\OneDrive\Mikrokontroller-Projekte\Git-Hub-Repositorys\Zusammen\OV7670_AVR\Terminal Programm\OV7670-Terminal\obj\Release\OV7670-Terminal.exe
+D:\OneDrive\Mikrokontroller-Projekte\Git-Hub-Repositorys\Zusammen\OV7670_AVR\Terminal Programm\OV7670-Terminal\obj\Release\OV7670-Terminal.pdb
