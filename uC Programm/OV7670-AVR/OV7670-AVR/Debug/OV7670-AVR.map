@@ -79,7 +79,7 @@ Discarded input sections
                 0x00000000       0x68 SCCB.o
  .debug_ranges  0x00000000       0x58 SCCB.o
  .debug_line    0x00000000      0x3cf SCCB.o
- .debug_str     0x00000000      0x30e SCCB.o
+ .debug_str     0x00000000      0x31d SCCB.o
  .comment       0x00000000       0x31 SCCB.o
  .debug_frame   0x00000000       0xd8 SCCB.o
  .text          0x00000000        0x0 SCCB_Old.o
@@ -704,17 +704,17 @@ END GROUP
  .debug_frame   0x0000018c      0x188 SCCB_Old.o
  .debug_frame   0x00000314      0x210 UART.o
 
-.debug_str      0x00000000      0x835
+.debug_str      0x00000000      0x844
  *(.debug_str)
  .debug_str     0x00000000      0x208 D:/Programme/Atmel Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_str     0x00000208      0x2dd main.o
-                                0x316 (size before relaxing)
- .debug_str     0x000004e5      0x12c OV7670_with_Fifo.o
+ .debug_str     0x00000208      0x2ec main.o
+                                0x325 (size before relaxing)
+ .debug_str     0x000004f4      0x12c OV7670_with_Fifo.o
+                                0x3af (size before relaxing)
+ .debug_str     0x00000620      0x142 SCCB_Old.o
                                 0x3a0 (size before relaxing)
- .debug_str     0x00000611      0x142 SCCB_Old.o
-                                0x391 (size before relaxing)
- .debug_str     0x00000753       0xe2 UART.o
-                                0x2fa (size before relaxing)
+ .debug_str     0x00000762       0xe2 UART.o
+                                0x309 (size before relaxing)
 
 .debug_loc      0x00000000     0x2356
  *(.debug_loc)
