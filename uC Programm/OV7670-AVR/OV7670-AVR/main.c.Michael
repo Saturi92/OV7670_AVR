@@ -1,0 +1,388 @@
+/*
+ * OV7670-AVR.c
+ *
+ * Created: 10.04.2018 23:36:29
+ * Author : David
+
+ ToDos:
+	-	In set Testpattern die neuen Funktionen benutzen und so den Code verschlanken
+	-	
+
+
+ */ 
+#define F_CPU 16000000UL
+
+#include <avr/io.h>
+#include <avr/common.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+
+#include <avr/pgmspace.h>                                //######### PROGMEM
+#define COLOR_BAR                                        //######### internen Farbbalken an
+#define WARTEZEIT 20                                     //######### Pasuse zwischen 2 Bildern
+
+//#include "SCCB.h"
+#include "UART.h"
+#include "SCCB_Old.h"
+#include "OV7670_with_Fifo.h"
+
+
+
+//################ meine default-Initwerte eingefügt incl. Routine zum Registersetzen
+
+struct regval_list{
+  uint8_t reg_num;
+  uint16_t value;
+};
+
+// Register aus Applikation.pdf 13.1 YCbCr
+// Input clock 24Mhz, 25fps
+const struct regval_list ov7670_default_regs[] PROGMEM = { 
+  { 0x12, 0x80},   // COM7  - Register Reset auf defaults (reserved Bit [2] muß 1 sein?)
+//
+
+  { 0x11, 0x80 },  // CLKRC              - Teiler XCLK In -> intern 1:1 -> also 12MHz bei meinem Modul
+  { 0x3a, 0x04 },  // TSLB               - keine automatische Windows-Anpassung bei Auflösungswechsel (reserved Bits [2:1] müssen 10 sein?)
+  { 0x12, 0x00 },  // COM7               - output YUV (reserved Bit [6] muß 0 sein?)
+  { 0x17, 0x13 },  // HSTART             - HREF Start bei colum, obere 8 Bit, untere 3 Bit in HREF [2:0]
+  { 0x18, 0x01 },  // HSTOP              - HREF Ende bei colum, obere 8 Bit untere 3 Bit in HREF [5:3]
+  { 0x32, 0xb6 },  // HREF               - HREF [7:6] Offset Flanke zu Data output ?
+  { 0x1a, 0x7a },  // VSTOP              - letzte Zeile obere 8 Bit, untere 2 Bit in VREF [3:2]
+  { 0x03, 0x0a },  // VREF               - Bit [7:6] AGC, Bit [5:4] reserved 00, [3:2] untere 2 Bits VSTOP, [1:0] untere 2 Bits VSTART
+  { 0x0c, 0x00 },  // COM3               - output MSB/LSB Swap, TriState/Scale/DCW enable/disable ?  default alles aus.
+  { 0x3e, 0x00 },  // COM14              - scaling Kram, PCLK Teiler, bleibt auf 1:1, automatic Scale ein bei CIF, QCIF, QVGA ? 
+  { 0x70, 0x3a },  // SCALING_XSC        - horizontal scale factor [6:0] -> default, 58 ?, Testpattern [7] mit SCALING_YSC [7] zusammen
+  { 0x71, 0x35 },  // SCALING_YSC        - vertikal scale factor [6:0] -> default, 53 ?, Testpattern [7] mit SCALING_XSC [7] zusammen
+  { 0x72, 0x11 },  // SCALING_DCWCTR     - diverse Samplingratenteiler, default, kein down-sampling, kein truncate ? 
+  { 0x73, 0xf0 },  // SCALING_PCLK_DIV   - DSP scale Teiler, alles 1:1
+  { 0xa2, 0x02 },  // SCALING_PCLK_DELAY - pixel clock delay [6:0], default, 2
+
+// Gamma-Kurve...  default aus Datenblatt, Farben passen bei mir so recht gut
+  { 0x7a, 0x24 },  // SLOP               - default 0x24
+  { 0x7b, 0x04 },  // GAM1               - default 0x04
+  { 0x7c, 0x07 },  // GAM2               - default 0x07
+  { 0x7d, 0x10 },  // GAM3               - default 0x10
+  { 0x7e, 0x28 },  // GAM4               - default 0x28
+  { 0x7f, 0x36 },  // GAM5               - default 0x36
+  { 0x80, 0x44 },  // GAM6               - default 0x44
+  { 0x81, 0x52 },  // GAM7               - default 0x52
+  { 0x82, 0x60 },  // GAM8               - default 0x60
+  { 0x83, 0x6c },  // GAM9               - default 0x6c
+  { 0x84, 0x78 },  // GAM10              - default 0x78
+  { 0x85, 0x8c },  // GAM11              - default 0x8c
+  { 0x86, 0x9e },  // GAM12              - default 0x9e
+  { 0x87, 0xbb },  // GAM13              - default 0xbb
+  { 0x88, 0xd2 },  // GAM14              - default 0xd2
+  { 0x89, 0xe5 },  // GAM15              - default 0xe5
+/*
+// Gamma-Kurve... Werte aus Applikation, Farben nicht stimmig, wenig kontrast, weiß -> gelbgrün, schwarz -> dunkel blaugrau
+  { 0x7a, 0x20 },  // SLOP               - default 0x24
+  { 0x7b, 0x10 },  // GAM1               - default 0x04
+  { 0x7c, 0x1e },  // GAM2               - default 0x07
+  { 0x7d, 0x35 },  // GAM3               - default 0x10
+  { 0x7e, 0x5a },  // GAM4               - default 0x28
+  { 0x7f, 0x69 },  // GAM5               - default 0x36
+  { 0x80, 0x76 },  // GAM6               - default 0x44
+  { 0x81, 0x80 },  // GAM7               - default 0x52
+  { 0x82, 0x88 },  // GAM8               - default 0x60
+  { 0x83, 0x8f },  // GAM9               - default 0x6c
+  { 0x84, 0x96 },  // GAM10              - default 0x78
+  { 0x85, 0xa3 },  // GAM11              - default 0x8c
+  { 0x86, 0xaf },  // GAM12              - default 0x9e
+  { 0x87, 0xc4 },  // GAM13              - default 0xbb
+  { 0x88, 0xd7 },  // GAM14              - default 0xd2
+  { 0x89, 0xe8 },  // GAM15              - default 0xe5
+*/
+// AGC, Weißabgleich, Belichtung...
+  { 0x13, 0xe0 },  // COM8               - AGC/AEC/AWB Kram, default 0x8F, hier AGC on, AEC unlimited step-size, banding filer on ?
+  { 0x01, 0x50 },  // BLUE               - AWB Gain Blue - Weißabgleich...  
+  { 0x02, 0x68 },  // RED                - AWB Gain red
+  { 0x00, 0x00 },  // GAIN               - AGC gain control, default 0x00   
+  { 0x10, 0x00 },  // AEC                - explosure value, default 0x40, hier 0x00, Belichtungszeit...
+  { 0x0d, 0x40 },  // COM4               - avarage option Bit [5:4], muß identisch zu COM17 sein ?  
+  { 0x14, 0x18 },  // COM9               - AGC Bit [6:4] und AGC/AEC freeze bit [0], default 0x4A, reserved [3:1] 100, gestzt 4x für gain ceiling
+  { 0xa5, 0x07 },  // BD50MAX            - 50Hz banding step limit, default 0x0F, gesetzt 0x07 ?   
+  { 0xab, 0x08 },  // BD60MAX            - 60Hz banding step limit, default 0x0F, gesetzt 0x08 ?   
+  { 0x24, 0x95 },  // AEW                - AGC/AEC stable operating region oberes Limit, default 0x75, gesetzt 0x95 ?
+  { 0x25, 0x33 },  // AEB                - AGC/AEC stable operating region unteres Limit, default 0x63, gesetzt 0x33 ?
+  { 0x26, 0xe3 },  // VPT                - AGC/AEC fast mode operating region Bit [7:4] high nibble oberes limit, Bit [3:0] high nibble unteres limit,
+  { 0x9f, 0x78 },  // HAECC1             - Histogramm based AGC/AEC control 1 ?
+  { 0xa0, 0x68 },  // HAECC2             - Histogramm based AGC/AEC control 2 ?
+  { 0xa1, 0x03 },  // RSVD               - reserved, kein default (XX), kein Registertyp (-) ? 
+  { 0xa6, 0xd8 },  // HAECC3             - Histogramm based AGC/AEC control 3 ?
+  { 0xa7, 0xd8 },  // HAECC4             - Histogramm based AGC/AEC control 4 ?
+  { 0xa8, 0xf0 },  // HAECC5             - Histogramm based AGC/AEC control 5 ?
+  { 0xa9, 0x90 },  // HAECC6             - Histogramm based AGC/AEC control 6 ?
+  { 0xaa, 0x94 },  // HAECC7             - Histogramm based AGC/AEC control 7 ?
+  { 0x13, 0xe5 },  // COM8               - AGC/AEC control bits, deault 0x8F, gesetzt: AGC/AEC fast mode [7], AEC step size unlimited [6], banding filter on [5], AGC/AWB/AEC on [2/1/0] 
+//
+  { 0x0e, 0x61 },  // COM5               - reserved [7:0], default 01, gesetzt 0x61 ?
+  { 0x0f, 0x4b },  // COM6               - HREF optical blanc Bit [7], reset all timings bei Formatwechsel Bit [1], default 0x43, gesetzt 0x4b ? 
+  { 0x16, 0x02 },  // RSVD               - reserviert, nicht dokumentiert, keine default-Werte usw.
+  { 0x1e, 0x07 },  // MVFP               - Mirror Bit [5], VFlip Bit [4], black sun enable Bit [2] default 01, gesetzt 0x07 black sun enable ?   
+  { 0x21, 0x02 },  // ADCCTR1            - reserved [7:0], default 0x02
+  { 0x22, 0x91 },  // ADCCTR2            - reserved [7:0], default 0x01
+  { 0x29, 0x07 },  // RSVD               - reserviert, nicht dokumentiert, keine default-Werte usw.
+  { 0x33, 0x0b },  // CHLF               - array current control, reserved [7:0], default 0x08
+  { 0x35, 0x0b },  // RSVD               - reserved, kein default (XX), kein Registertyp (-) ?
+  { 0x37, 0x1d },  // ADC                - ADC control, reserved [7:0], default 0x3f   
+  { 0x38, 0x71 },  // ACOM               - ADC/analog common mode control, reserved [7:0], default 0x01 
+  { 0x39, 0x2a },  // OFON               - ADC offset control,reserved [7:0], default 0x00
+  { 0x3c, 0x78 },  // COM12              - no HREF when VSYNC low, Bit [7], reserved Bit [6:0], default 0x68, gesetzt 0x78 always HREF  
+  { 0x4d, 0x40 },  // RSVD               - reserviert, nicht dokumentiert, keine default-Werte usw.
+  { 0x4e, 0x20 },  // RSVD               - reserviert, nicht dokumentiert, keine default-Werte usw.
+  { 0x69, 0x00 },  // GFIX               - Fix gain für Gr/Gb/R/B Kanal, default 0x00  
+  { 0x6b, 0x0a },  // DBLV               - PLL control, Bit [7:6] Faktor x1/x2/x4/x8, Bit [4] Regulator on/off, default 0x0a  
+  { 0x74, 0x10 },  // REG74              - Digital gain control, default 0x00, gesetzt 0x10 gain control on, bypass ?
+  { 0x8d, 0x4f },  // RSVD               - bis Register 0x91 reserviert, nicht dokumentiert, keine default-Werte usw.
+  { 0x8e, 0x00 },  // RSVD
+  { 0x8f, 0x00 },  // RSVD
+  { 0x90, 0x00 },  // RSVD
+  { 0x91, 0x00 },  // RSVD
+  { 0x92, 0x66 },  // DM_LNL             - dummy line low 8 bits, default 0x00, gesetzt 0x66 ?
+  { 0x96, 0x00 },  // RSVD               - bis Register 0x9c reserviert, nicht dokumentiert, keine default-Werte usw.
+  { 0x9a, 0x80 },  // RSVD
+  { 0xb0, 0x84 },  // RSVD
+  { 0xb1, 0x0c },  // ABLC1              - ABLC on/off Bit [2], default 0x00, gesetzt 0x0c ABLC enabled ?   
+  { 0xb2, 0x0e },  // RSVD
+  { 0xb3, 0x82 },  // THL_ST             - ABLC target, default 0x80, gesetzt 0x82 ?
+  { 0xb8, 0x0a },  // RSVD
+//
+  { 0x43, 0x14 },  // AWBC1              - reserved, default 0x14
+  { 0x44, 0xf0 },  // AWBC2              - reserved, default 0xf0
+  { 0x45, 0x34 },  // AWBC3              - reserved, default 0x45, gesetzt 0x34 ?
+  { 0x46, 0x58 },  // AWBC4              - reserved, default 0x61, gesetzt 0x58 ?
+  { 0x47, 0x28 },  // AWBC5              - reserved, default 0x51, gesetzt 0x28 ?
+  { 0x48, 0x3a },  // AWBC6              - reserved, default 0x79, gesetzt 0x3a ?
+  { 0x59, 0x88 },  // RSVD               - AWB control, bis Register 0x61 reserviert, nicht dokumentiert, keine default-Werte usw.
+  { 0x5a, 0x88 },  // RSVD
+  { 0x5b, 0x44 },  // RSVD
+  { 0x5c, 0x67 },  // RSVD
+  { 0x5d, 0x49 },  // RSVD
+  { 0x5e, 0x0e },  // RSVD
+  { 0x64, 0x04 },  // LLC3               - lens correction, default 0x50, gesetzt 0x04
+  { 0x65, 0x20 },  // LLC4               - lens correction, default 0x30, gesetzt 0x20
+  { 0x66, 0x05 },  // LLC5               - lens correction, Bit [2] select LLC3/LLC6/LLC7, Bit [0] on/off, default 0x00, gesetzt enable usw. ?                 
+  { 0x94, 0x04 },  // LLC6               - lens correction, default 0x50, gesetzt 0x04
+  { 0x95, 0x08 },  // LLC7               - lens correction, default 0x50, gesetzt 0x05
+  { 0x6c, 0x0a },  // AWBCTR3            - Weißabgleich, default 0x02, gesetzt 0x0a ?
+  { 0x6d, 0x55 },  // AWBCTR2            - Weißabgleich, default 0x55
+  { 0x6e, 0x11 },  // AWBCTR1            - Weißabgleich, default 0xc0, gesetzt 0x11 ?
+  { 0x6f, 0x9f },  // AWBCTR0            - Weißabgleich, default 0x9a, gesetzt 0x9f ? 
+  { 0x6a, 0x40 },  // GGAIN              - G channel AWB gain, default 0x00, gesetzt 0x40 ?
+  { 0x01, 0x40 },  // BLUE               - im 3. Block schon gesetzt, anderer Wert ???
+  { 0x02, 0x40 },  // RED                - im 3. Block schon gesetzt, anderer Wert ??? 
+  { 0x13, 0xe7 },  // COM8               - im 3. Block schon gesetzt, anderer Wert ??? 
+//
+
+  { 0x4f, 0x80 },  // MTX1               - matrix coeffizient 1, default 0x40, gesetzt 0x80 ?
+  { 0x50, 0x80 },  // MTX2               - matrix coeffizient 2, default 0x34, gesetzt 0x80 ?
+  { 0x51, 0x00 },  // MTX3               - matrix coeffizient 3, default 0x0c, gesetzt 0x00 ?
+  { 0x52, 0x22 },  // MTX4               - matrix coeffizient 4, default 0x17, gesetzt 0x22 ?
+  { 0x53, 0x5e },  // MTX5               - matrix coeffizient 5, default 0x29, gesetzt 0x5e ?
+  { 0x54, 0x80 },  // MTX6               - matrix coeffizient 6, default 0x40, gesetzt 0x80 ?
+
+  { 0x58, 0x9e },  // MTXS               - matrix coeffizient sign for 1...6 usw. ???  
+
+//
+  { 0x41, 0x08 },  // COM16              - YUV/DeNoise/AWB Gain/Color matrix on/off, default 0x08 AWB gain enabled
+  { 0x3f, 0x00 },  // EDGE               - Edge Enhancement Factor Bit [3:0], default 0x00
+  { 0x75, 0x03 },  // REG75              - Edge Enhancement lower limit Bit [3_0] 
+  { 0x76, 0xe1 },  // REG76              - Edge Enhancement higher limit Bit [4:0], black pixel correction Bit [7], white pixel correction Bit [6]  on/off
+  { 0x4c, 0x00 },  // DNSTH              - DeNoise strength, default 0x00 
+  { 0x77, 0x00 },  // REG77              - DeNoise offset Bit [7:0], default 0x10, gesetzt 0x10 ?
+  { 0x3d, 0xc2 },  // COM13              - UV Swap, gamma on/off, UV-level auto on/off, default 0x88, gesetzt 0xc2 gamma on, UV level on, UYVY ????
+  { 0x4b, 0x09 },  // REG4B              - UV average on/off Bit [0], default 0x00, gesetzt 0x09 UV average on ?
+  { 0xc9, 0x60 },  // SATCTTR            - Saturation control Bit [7:4] control min, Bit [3:0] control result, default 0xc0, gesetzt 0x60 control min ?
+  { 0x41, 0x38 },  // COM16              - schon auf 0x08 gesetzt ???
+  { 0x56, 0x40 },  // CONTRAS            - contrast control , default 0x40
+//
+  { 0x34, 0x11 },  // ARLBM               - Array Referenz Control [7:0] reserver 
+  { 0x3b, 0x0a },  // COM11               - Nachtmodus, 50/60Hz automatic usw. usw. on/off, default 0x00, gesetzt: ´Banding Filer [3], Belichtungszeit [1], 
+  { 0xa4, 0x88 },  // NT_CTRL             - auto-frame Sachen, default 0x00, gesetzt: reserved[7], reduce frame rate by half [3]
+  { 0x96, 0x00 },  // RSVD                - bis Register 0x9c reserviert, nicht dokumentiert, keine default-Werte usw.
+  { 0x97, 0x30 },  // RSVD
+  { 0x98, 0x20 },  // RSVD
+  { 0x99, 0x30 },  // RSVD
+  { 0x9a, 0x84 },  // RSVD
+  { 0x9b, 0x29 },  // RSVD
+  { 0x9c, 0x03 },  // RSVD
+  { 0x9d, 0x98 },  // BD50ST              - 50 Hz Banding Filter Wert, nur aktiv mit COM8 [5] high und COM11 [3] high, default 0x99, gesetzt 0x98 ?  
+  { 0x9e, 0x3f },  // BD60ST              - 60 Hz Banding Filter Wert, nur aktiv mit COM8 [5] high und COM11 [3] low, default 0x7f, gesetzt 0x3f ?  
+  { 0x78, 0x04 },  // RSVD                - reserviert, nicht dokumentiert, keine default-Werte usw.  
+//
+
+  { 0x79, 0x01 },  // RSVD                - reserviert, nicht dokumentiert, keine default-Werte usw. 
+  { 0xc8, 0xf0 },  // RSVD                - reserviert, nicht dokumentiert, keine default-Werte usw. 
+  { 0x79, 0x0f },  // RSVD
+  { 0xc8, 0x00 },  // RSVD
+  { 0x79, 0x10 },  // RSVD
+  { 0xc8, 0x7e },  // RSVD
+  { 0x79, 0x0a },  // RSVD
+  { 0xc8, 0x80 },  // RSVD
+  { 0x79, 0x0b },  // RSVD
+  { 0xc8, 0x01 },  // RSVD
+  { 0x79, 0x0c },  // RSVD
+  { 0xc8, 0x0f },  // RSVD
+  { 0x79, 0x0d },  // RSVD
+  { 0xc8, 0x20 },  // RSVD
+  { 0x79, 0x09 },  // RSVD
+  { 0xc8, 0x80 },  // RSVD
+  { 0x79, 0x02 },  // RSVD
+  { 0xc8, 0xc0 },  // RSVD
+  { 0x79, 0x03 },  // RSVD
+  { 0xc8, 0x40 },  // RSVD
+  { 0x79, 0x05 },  // RSVD
+  { 0xc8, 0x30 },  // RSVD
+  { 0x79, 0x26 },  // RSVD
+  { 0x2d, 0x00 },  // ADVFL                - LSB, insert dummy lines in vertikal direction, 1 Bit - 1 Zeile ? 
+  { 0x2e, 0x00 },  // ADVFH                - MSB, insert dummy lines in vertikal direction ? 
+  
+  { 0xff, 0xff }, // Endemarke
+};
+
+//-----------------------------------------------------------------
+
+const struct regval_list rgb565_ov7670[] PROGMEM = {
+
+#ifdef COLOR_BAR
+  { 0x12, 0x16 },  // COM7   - Selects QVGA [4] und RGB [2][0] [1] color bar, on 0x16 off 0x14
+  { 0x42, 0x08 },  // COM17  - AEC Window [7:6] Bit 1 und 0 wie COM4 [5:4], DSP Color Bar on/off[3], on 0x08 off 0x00
+#else
+  { 0x12, 0x14 },  // COM7   - Selects QVGA [4] und RGB [2][0] [1] color bar, on 0x16 off 0x14
+  { 0x42, 0x00 },  // COM17  - AEC Window [7:6] Bit 1 und 0 wie COM4 [5:4], DSP Color Bar on/off[3], on 0x08 off 0x00
+#endif 
+
+  { 0x40, 0x14 },  // COM15  - Selects RGB 565 [5:4] und Full Range [7:6]
+  { 0x3a, 0x05 },  // TSLB   - Window auto, YUYV [00] Ausgabe - TSLB [3], COM13[0]
+  { 0x3d, 0xd8 },  // COM13  - Gamma on [7], UV auto [6], UV swap [0]
+  { 0x04, 0x00 },  // COM1   - CCIR656 on/off [6], AEC Bit 1 und 0 [1:0]
+
+  { 0xff, 0xff },  // Endemarker
+};
+
+//-----------------------------------------------------------------
+
+void wrSensorRegs8_8(const struct regval_list reglist[])
+{
+  uint8_t reg_addr = 0, reg_val = 0;
+  const struct regval_list *next = reglist;
+  while ((reg_addr != 0xff) | (reg_val != 0xff))   // Endemarke 0xff, 0xff
+  {
+    reg_addr = pgm_read_byte(&next->reg_num);
+    reg_val = pgm_read_byte(&next->value);
+    OV7670_write(reg_addr, reg_val);
+    next++;
+  }
+}
+
+
+//############### Ende Einfügung Registerkram
+
+int main(void)
+
+{
+//Initial Variables
+volatile int Programstatus = -1; 
+volatile int height = 320;                  //######### auf 320 gesetzt bis zur Klärung
+volatile int width = 240;
+volatile int BytesPerPixel = 2;
+volatile char Byte=0;
+char Errorcode;
+int imageLineToRead = 0;	//Image Line, which will be read out from the FIFO
+
+UART0_init();
+// UART0_senden ("Reset\r\n"); // mein debug
+OV7670_init();
+  wrSensorRegs8_8(ov7670_default_regs);   //######### OV7670 default Registerwerte
+  wrSensorRegs8_8(rgb565_ov7670);         //######### OV7670 default RGB565
+
+//UART0_senden ("Test\r\n"); // mein debug
+cli();                                    //######### gesperrt gelassen, keine UART-Routinen mit IRQ
+//sei();  
+
+while (1) 
+{
+	OV7670_captureNewImage();
+	OV7670_ResetFifoReadPointer();
+  sendFrameBufferToUART (width, height, BytesPerPixel);
+
+  for (uint8_t i = 0; i < WARTEZEIT; i++)        //########## 20s warten
+  {
+	  _delay_ms(1000);
+  }
+//################## kompletten switch auskommntiert
+
+/*
+	switch (Programstatus){
+		case 1: //ReadRegister and sent it to Uart
+				UART0_senden_Byte(receivedAddress);
+				OV_SCCB_RegisterToUart(receivedAddress);
+				Programstatus=-1;
+
+			break;
+		case 2: //Change Register Value
+				Errorcode = OV7670_write(receivedAddress,receivedData1);
+				UART0_senden_Byte(Errorcode);
+					
+				Programstatus =-1;
+				break;
+		case 3:		//Capture Image
+			OV7670_captureNewImage();
+			//OV7670_ResetFifoWritePointer();
+			OV7670_ResetFifoReadPointer();
+			OV7670_sendNextLine(width,BytesPerPixel);	//send the first Picture Row and wait for feedback
+			imageLineToRead = 0;	//resets the Line to read from the Buffer
+			Programstatus=-1;
+			break;
+		case 4:	//set width
+			width = ((receivedData2<<8)|(receivedData1));
+			UART0_senden_Byte(0x04);
+			Programstatus =-1;
+			break;
+		case 5:	//set height
+			height = ((receivedData2<<8)|(receivedData1));
+			UART0_senden_Byte(0x05);
+			Programstatus =-1;
+			break;
+		case 6: //set Byte per Pixel
+			BytesPerPixel = receivedData1;
+			UART0_senden_Byte(0x06);
+			Programstatus =-1;
+			break;
+		case 0x08:
+			Errorcode = OV7670_init();
+			UART0_senden_Byte(Errorcode);
+			Programstatus = -1;
+			break;
+		case 0x0A:	//next Line of Imagebuffer requested
+			OV7670_sendNextLine(width,BytesPerPixel);
+			imageLineToRead++;
+			Programstatus=-1;
+			break;
+		case 0x0B:	//repeat of Line of Imagebuffer requested
+			imageLineToRead--;
+			OV7670_sendLineRepeat(imageLineToRead,width, BytesPerPixel);
+			imageLineToRead++;
+			Programstatus=-1;
+				break;
+		case 0x0C:	//send whole Imageframe
+			OV7670_captureNewImage();
+			OV7670_ResetFifoReadPointer();
+			 sendFrameBufferToUART (width, height, BytesPerPixel);
+			 Programstatus=-1;
+			 break;
+		default:
+				if(UART0_rx_complete()){
+					UART0_rx_work(&Programstatus);
+				}
+			break;
+		}
+		_delay_ms(5);      // ##### Wartezeit, wozu ist die da???
+*/
+	
+	}
+
+}
+
+

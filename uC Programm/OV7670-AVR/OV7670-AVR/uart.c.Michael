@@ -1,0 +1,221 @@
+/*
+ * UART.cpp
+ *
+ * Created: 06.06.2016 20:52:46
+ *  Author: David
+ */ 
+
+ #include <avr/io.h>
+ #include <avr/interrupt.h>
+
+
+#include <avr/io.h> 		
+#include <avr/interrupt.h>
+#include <stdint.h>  
+#include <string.h>
+#include "UART.h"
+#include <util/delay.h>
+
+//------------------------------------------------------------------------------
+//######### beim Hardware-UART auf dem AVR überflüssig, die stehen sieso fest
+/* 
+#define TX_DDR DDRD
+#define TX_Port PORTD
+#define TX_Pin 1
+
+#define RX_DDR DDRD
+#define RX_Port PORTD
+#define RX_Pin 0
+*/
+//------------------------------------------------------------------------------
+//######### 
+/* 
+int temp = 0;	
+
+struct UART0_rx				//Receive Buffer
+{
+char data[UART0_rx_size];
+char read;
+char write;
+}UART0_rx= {{}, 0, 0};
+	
+volatile struct UART0_tx				//Transmit Buffer
+{
+volatile char data[UART0_tx_size];
+char read;
+char write;
+}UART0_tx= {{}, 0, 0};
+
+//Public declarations
+char receivedAddress =0;
+char receivedData1 =0;
+char receivedData2 =0;
+*/
+//------------------------------------------------------------------------------
+
+void UART0_init (void)
+{
+// 	TX_DDR |=(1<<TX_Pin);		//######### definiere TX Pin als Ausgang  -  wird sowieso von TXE und RXE gesetzt
+//	RX_DDR &=~(1<<RX_Pin);		//definiere RX Pin als Eingang
+
+
+	UBRR0H = 0b00000000;			// Setzt Baudrate
+	//UBRR0L = 0b00110011;			// dezimal : 103->9600; dez 68->14400;dez 51->19200; dez 8 ->115200 
+	//UBRR0L = 0b00011001;	//38400
+	//UBRR0L = 0b00000011;	//230400
+  UBRR0L = 0b00001000;    //######### 230400 
+
+	UCSR0A = 0b00000010;    //######### X2 eingeschaltet 
+
+//	UCSR0A |=0b00000000;
+				//	 ^---U2X  
+	UCSR0B = 0b10011000;
+					/* ^||||||| Einschalten	Interrupt Receive Complete
+							^|||||| Einschalten Interrupt Transmit Complete
+							 ^||||| Einschalten Interrupt Data Register Leer
+					      ^||||	Einschalten Receiver
+							   ^||| Einschalten Transmitter
+									^|| Character Size
+									 ^| Receive Data Bit 8
+									  ^ Transmit Data Bit  8		*/
+	UCSR0C = 0b00001110;
+					/*  ^^|||||| USART Mode Select
+				  			^^|||| Parity Mode Bits
+							    ^||| STOP Bit Select
+				    			 ^^| Character Size     11 -> 8Bit
+									   ^ Clock Polarity 			*/
+}
+
+//--------------- ISR empfangen ---------------------------------------
+/*
+ISR(USART_RX_vect)                    	// Receive Complete Interrupt
+{ 
+  unsigned char nextChar;
+
+  // Daten aus dem Puffer lesen
+  nextChar = UDR0;
+  if( uart_str_complete == 0 )
+	{	// wenn uart_string gerade in Verwendung, neues Zeichen verwerfen
+
+    // Daten werden erst in uart_string geschrieben, wenn nicht String-Ende/max Zeichenlänge erreicht ist/string gerade verarbeitet wird
+    if( nextChar != '\n' && nextChar != '\r' && uart_str_count < UART_MAXSTRLEN ) // Zeichen empfnagen und passt rein
+		{
+      uart_string[uart_str_count] = nextChar;
+      uart_str_count++;
+    }
+    else
+		{
+      uart_string[uart_str_count] = '\0';              // 0-Byte and Ende
+      uart_str_count = 0;
+      uart_str_complete = 1;
+    }
+  }
+}
+*/
+//---------------- empfangen ------------------------------------------
+
+//------------------------ FiFo Arbeiten--------------------------------
+/*
+int UART0_rx_work(int* Programmstatus)
+{
+  //////////////-------------------------------------------------------Hier stimmt etwas mit der Befehlsverarbeitung nicht! Der erste Befehl funktioniert nie
+//Beginn der Befehlsauswertung
+ if(uart_string[0]==0x01)	//Read Register
+	{
+		receivedAddress = uart_string[1];
+		*Programmstatus = 0x01;
+	}
+	if(uart_string[0]==0x02){	//Write Register
+		receivedAddress = uart_string[1];
+		receivedData1 = uart_string[2];
+		*Programmstatus = 0x02;
+	}
+	if(uart_string[0]==0x03){		//Capture Photo
+		*Programmstatus = 0x03;
+	}
+	if(uart_string[0]==0x04){		//set x Resolution
+		receivedData1 = uart_string[1];
+		receivedData2 = uart_string[2];
+		*Programmstatus = 0x04;
+	}
+	if(uart_string[0]==0x05){		//set y resolution
+		receivedData1 = uart_string[1];
+		receivedData2 = uart_string[2];
+		*Programmstatus = 0x05;
+	}
+	if(uart_string[0]==0x06){		//set Bytes per Pixel
+		receivedData1 = uart_string[1];
+		*Programmstatus = 0x06;
+	}
+	if(uart_string[0]==0x08){
+		*Programmstatus = 0x08;
+	}
+	
+	if(uart_string[0]==0x0A)		//new Line from Buffer requested by the Terminal
+	{
+		*Programmstatus = 0x0A ;
+	}
+	if(uart_string[0]==0x0B)	//Line repeat from Buffer requeseted by the Terminal
+	{
+		*Programmstatus = 0x0B;
+	}
+	if(uart_string[0]==0x0C) //send complete Picture to terminal
+	{
+		*Programmstatus = 0x0C;
+	}
+
+}
+*/
+//#########
+//--------- Senden --------------------------------------------------
+
+void UART0_senden_Byte(char daten)
+{
+  while (!(UCSR0A & (1 << UDRE0)));           // wait for byte to transmit
+  UDR0 = daten;                               // Byte rausschicken
+  _delay_us(50);                              // wegen des blöden UNO-Wandlers...   
+}
+
+//--------------------------------------------------------------
+
+void UART0_senden(char input[16])	           // Sendet Text bis \0	
+{
+  uint8_t a = 0;
+  uint8_t byte = 0;
+  do
+  {
+	  byte = input[a];
+	  if (byte != 0)                            // noch Daten?
+	  {	
+      UART0_senden_Byte(byte);                // rausschicken
+    }
+     a++;
+  } while (byte != 0);
+}
+
+//--------------------------------------------------------------
+
+void UART0_senden_newLine ()
+{
+	UART0_senden_Byte(13);	//CR
+	UART0_senden_Byte(10);	//LF
+}
+
+//--------------------------------------------------------------
+
+void UART0_senden_zahl(long zahl)
+{
+	int input[4];
+	for(int i = 0; i<4; i++)
+	{
+		input[i] = (zahl % 10) + 48;
+		zahl = zahl / 10;
+	}
+	for(int i=3; i>=0; i--)
+	{
+		UART0_senden_Byte(input[i]);
+	}
+}
+
+
+

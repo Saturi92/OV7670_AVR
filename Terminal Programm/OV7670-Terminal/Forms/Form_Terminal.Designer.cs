@@ -57,6 +57,8 @@
             this.cmd_Port_disconnect = new System.Windows.Forms.Button();
             this.TabControl = new System.Windows.Forms.TabControl();
             this.TaPa_Settings = new System.Windows.Forms.TabPage();
+            this.GrBo_Log = new System.Windows.Forms.GroupBox();
+            this.RiTeBo_history = new System.Windows.Forms.RichTextBox();
             this.GrBo_LoadedSettings = new System.Windows.Forms.GroupBox();
             this.LiVi_LoadedSettings = new System.Windows.Forms.ListView();
             this.Offline_Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -95,7 +97,6 @@
             this.TeBo_WriteData = new System.Windows.Forms.TextBox();
             this.TeBo_WriteRegister = new System.Windows.Forms.TextBox();
             this.cmd_WriteRegister = new System.Windows.Forms.Button();
-            this.RiTeBo_history = new System.Windows.Forms.RichTextBox();
             this.TaPa_Image = new System.Windows.Forms.TabPage();
             this.GrBo_RightPicture = new System.Windows.Forms.GroupBox();
             this.lbl_RP_Height = new System.Windows.Forms.Label();
@@ -174,12 +175,12 @@
             this.hilfeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
             this.lbl_PictureDescription = new System.Windows.Forms.Label();
-            this.GrBo_Log = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.PiBo_LeftPicture)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.GrBo_ComPort.SuspendLayout();
             this.TabControl.SuspendLayout();
             this.TaPa_Settings.SuspendLayout();
+            this.GrBo_Log.SuspendLayout();
             this.GrBo_LoadedSettings.SuspendLayout();
             this.GrBo_DeviceSettings.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -202,7 +203,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.PiBo_ImageBox)).BeginInit();
             this.GrBo_Camera_Status.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.GrBo_Log.SuspendLayout();
             this.SuspendLayout();
             // 
             // PiBo_LeftPicture
@@ -475,6 +475,25 @@
             this.TaPa_Settings.Text = "Settings";
             this.TaPa_Settings.UseVisualStyleBackColor = true;
             // 
+            // GrBo_Log
+            // 
+            this.GrBo_Log.Controls.Add(this.RiTeBo_history);
+            this.GrBo_Log.Location = new System.Drawing.Point(6, 445);
+            this.GrBo_Log.Name = "GrBo_Log";
+            this.GrBo_Log.Size = new System.Drawing.Size(593, 136);
+            this.GrBo_Log.TabIndex = 35;
+            this.GrBo_Log.TabStop = false;
+            this.GrBo_Log.Text = "History";
+            // 
+            // RiTeBo_history
+            // 
+            this.RiTeBo_history.Location = new System.Drawing.Point(8, 19);
+            this.RiTeBo_history.Name = "RiTeBo_history";
+            this.RiTeBo_history.Size = new System.Drawing.Size(579, 111);
+            this.RiTeBo_history.TabIndex = 26;
+            this.RiTeBo_history.Text = "";
+            this.RiTeBo_history.TextChanged += new System.EventHandler(this.RiTeBo_history_TextChanged);
+            // 
             // GrBo_LoadedSettings
             // 
             this.GrBo_LoadedSettings.Controls.Add(this.LiVi_LoadedSettings);
@@ -504,12 +523,12 @@
             // Offline_Address
             // 
             this.Offline_Address.Text = "Address";
-            this.Offline_Address.Width = 50;
+            this.Offline_Address.Width = 58;
             // 
             // Offline_Value
             // 
             this.Offline_Value.Text = "Value";
-            this.Offline_Value.Width = 39;
+            this.Offline_Value.Width = 49;
             // 
             // cmd_OpenFromStruct
             // 
@@ -571,12 +590,12 @@
             // Online_Address
             // 
             this.Online_Address.Text = "Address";
-            this.Online_Address.Width = 50;
+            this.Online_Address.Width = 54;
             // 
             // Online_Value
             // 
             this.Online_Value.Text = "Value";
-            this.Online_Value.Width = 39;
+            this.Online_Value.Width = 56;
             // 
             // lbl_ReadAllNotUpdated
             // 
@@ -863,15 +882,6 @@
             this.cmd_WriteRegister.UseVisualStyleBackColor = true;
             this.cmd_WriteRegister.Click += new System.EventHandler(this.cmd_WriteRegister_Click);
             // 
-            // RiTeBo_history
-            // 
-            this.RiTeBo_history.Location = new System.Drawing.Point(8, 19);
-            this.RiTeBo_history.Name = "RiTeBo_history";
-            this.RiTeBo_history.Size = new System.Drawing.Size(579, 111);
-            this.RiTeBo_history.TabIndex = 26;
-            this.RiTeBo_history.Text = "";
-            this.RiTeBo_history.TextChanged += new System.EventHandler(this.RiTeBo_history_TextChanged);
-            // 
             // TaPa_Image
             // 
             this.TaPa_Image.Controls.Add(this.GrBo_RightPicture);
@@ -882,7 +892,7 @@
             this.TaPa_Image.Location = new System.Drawing.Point(4, 22);
             this.TaPa_Image.Name = "TaPa_Image";
             this.TaPa_Image.Padding = new System.Windows.Forms.Padding(3);
-            this.TaPa_Image.Size = new System.Drawing.Size(581, 596);
+            this.TaPa_Image.Size = new System.Drawing.Size(605, 586);
             this.TaPa_Image.TabIndex = 0;
             this.TaPa_Image.Text = "_picture";
             this.TaPa_Image.UseVisualStyleBackColor = true;
@@ -1043,7 +1053,7 @@
             this.TabPage_Capture.Controls.Add(this.groupBox1);
             this.TabPage_Capture.Location = new System.Drawing.Point(4, 22);
             this.TabPage_Capture.Name = "TabPage_Capture";
-            this.TabPage_Capture.Size = new System.Drawing.Size(581, 596);
+            this.TabPage_Capture.Size = new System.Drawing.Size(605, 586);
             this.TabPage_Capture.TabIndex = 2;
             this.TabPage_Capture.Text = "Caputre Image";
             this.TabPage_Capture.UseVisualStyleBackColor = true;
@@ -1180,7 +1190,7 @@
             this.TaPa_manu_mode.Controls.Add(this.groupBox7);
             this.TaPa_manu_mode.Location = new System.Drawing.Point(4, 22);
             this.TaPa_manu_mode.Name = "TaPa_manu_mode";
-            this.TaPa_manu_mode.Size = new System.Drawing.Size(581, 596);
+            this.TaPa_manu_mode.Size = new System.Drawing.Size(605, 586);
             this.TaPa_manu_mode.TabIndex = 3;
             this.TaPa_manu_mode.Text = "Manueller Modus";
             this.TaPa_manu_mode.UseVisualStyleBackColor = true;
@@ -1370,7 +1380,7 @@
             this.tabPage1.Controls.Add(this.label13);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(581, 596);
+            this.tabPage1.Size = new System.Drawing.Size(605, 586);
             this.tabPage1.TabIndex = 4;
             this.tabPage1.Text = "Sniffer";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -1626,16 +1636,6 @@
             this.lbl_PictureDescription.TabIndex = 2;
             this.lbl_PictureDescription.Text = "0x0 0 bpp";
             // 
-            // GrBo_Log
-            // 
-            this.GrBo_Log.Controls.Add(this.RiTeBo_history);
-            this.GrBo_Log.Location = new System.Drawing.Point(6, 445);
-            this.GrBo_Log.Name = "GrBo_Log";
-            this.GrBo_Log.Size = new System.Drawing.Size(593, 136);
-            this.GrBo_Log.TabIndex = 35;
-            this.GrBo_Log.TabStop = false;
-            this.GrBo_Log.Text = "History";
-            // 
             // Form_Terminal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1667,6 +1667,7 @@
             this.GrBo_ComPort.PerformLayout();
             this.TabControl.ResumeLayout(false);
             this.TaPa_Settings.ResumeLayout(false);
+            this.GrBo_Log.ResumeLayout(false);
             this.GrBo_LoadedSettings.ResumeLayout(false);
             this.GrBo_DeviceSettings.ResumeLayout(false);
             this.GrBo_DeviceSettings.PerformLayout();
@@ -1704,7 +1705,6 @@
             this.GrBo_Camera_Status.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.GrBo_Log.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

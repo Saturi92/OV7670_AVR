@@ -26,10 +26,11 @@ int main(void)
 
 {
 //Initial Variables
-int Programstatus = -1; 
-int height = 315;
-int width = 240;
-int BytesPerPixel = 2;
+volatile int Programstatus = -1; 
+volatile int height = 315;
+volatile int width = 240;
+volatile int BytesPerPixel = 2;
+volatile char Byte=0;
 char Errorcode;
 int imageLineToRead = 0;	//Image Line, which will be read out from the FIFO
 
@@ -39,7 +40,6 @@ sei();
 
 while (1) 
 {
-
 	switch (Programstatus){
 		case 1: //ReadRegister and sent it to Uart
 				UART0_senden_Byte(receivedAddress);
@@ -95,11 +95,13 @@ while (1)
 		case 0x0C:	//send whole Imageframe
 			OV7670_captureNewImage();
 			OV7670_ResetFifoReadPointer();
-			sendFrameBufferToUART (width, height, BytesPerPixel);
-			Programstatus=-1;
-			break;
+			 sendFrameBufferToUART (width, height, BytesPerPixel);
+			 Programstatus=-1;
+			 break;
 		default:
-			UART0_rx_work(&Programstatus);
+				if(UART0_rx_complete()){
+					UART0_rx_work(&Programstatus);
+				}
 			break;
 		}
 		_delay_ms(5);

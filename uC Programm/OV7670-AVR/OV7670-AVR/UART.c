@@ -25,10 +25,10 @@
 #define RX_Port PORTD
 #define RX_Pin 0
 
-#define UART0_rx_size 512					// Nur Werte 2^n zulässig !
+#define UART0_rx_size 256					// Nur Werte 2^n zulässig !
 #define UART0_rx_mask (UART0_rx_size-1)
 
-#define UART0_tx_size 512					// Nur Werte 2^n zulässig !
+#define UART0_tx_size 256					// Nur Werte 2^n zulässig !
 #define UART0_tx_mask (UART0_tx_size-1)
 
 #define UART0_Befehl_FiFo 10
@@ -43,9 +43,9 @@ uint16_t read;
 uint16_t write;
 }UART0_rx= {{}, 0, 0};
 	
-struct UART0_tx				//Transmit Buffer
+volatile struct UART0_tx				//Transmit Buffer
 {
-char data[UART0_tx_size];
+volatile char data[UART0_tx_size];
 uint16_t read;
 uint16_t write;
 }UART0_tx= {{}, 0, 0};
@@ -63,16 +63,14 @@ void UART0_init (void)
 
 
 	UBRR0H = 0b00000000;			// Setzt Baudrate
-	//UBRR0L = 0b00110011;			// dezimal : 103->9600; dez 68->14400;dez 51->19200; dez 8 ->115200 
+	//UBRR0L = 0b00110011;			// dezimal : 103->9600; dez 68->14400;dez 51->19200; dez 8 ->115200 (Wenn U2Xn is deactivatet)
 	//UBRR0L = 0b00011001;	//38400
 	//UBRR0L = 0b00000011;	//230400
-	UBRR0L = 0b00010000;
-	
-	//UBRR0L = 103;
+	//UBRR0L = 0b11001111;	//9600
+	//UBRR0L = 0b00010000;	//115200
+	UBRR0L = 0b00000000;	//2MBaud
 	UCSR0A = 0b00000010;
-	UCSR0A |=0b00000000;
-	//				  ^---U2X  
-			
+				   //^ U2x double the Uart speed 
 	UCSR0B = 0b10011000;
 			/* ^||||||| Einschalten	Interrupt Receive Complete
 				^|||||| Einschalten Interrupt Transmit Complete
@@ -82,12 +80,12 @@ void UART0_init (void)
 					^|| Character Size
 					 ^| Receive Data Bit 8
 					  ^ Transmit Data Bit  8		*/
-	UCSR0C = 0b00001110;
-		   /*  ^^|||||| USART Mode Select
-			     ^^|||| Parity Mode Bits
-				   ^||| STOP Bit Select
-				    ^^| Character Size     11 -> 8Bit
-					  ^ Clock Polarity 			*/
+	 UCSR0C = 0b00000110;
+			/*  ^^|||||| USART Mode Select
+				  ^^|||| Parity Mode Bits
+				    ^||| STOP Bit Select
+				     ^^| Character Size     11 -> 8Bit
+					   ^ Clock Polarity 			*/
 }
 
 //-------------------------------------------------- UART senden --------------------------------------------------
@@ -151,9 +149,9 @@ void UART0_senden_zahl(long zahl)
 	UCSR0B |= 0b00100000;				// Data Register empty Interrupt anschalten 
 }
 void UART0_senden_Byte(char Byte)
-{
-while(!(UART0_tx_in(Byte))){}
-UCSR0B |= 0b00100000;				// Data Register empty Interrupt anschalten 
+{	
+    while(!(UART0_tx_in(Byte))){}		 
+    UCSR0B |= 0b00100000;				// Data Register empty Interrupt anschalten
 }
 
 ISR(USART_RX_vect)                    	// Receive Complete Interrupt
@@ -193,9 +191,9 @@ char UART0_rx_out (void)
 		{
 	 		return 0;									//return 0 -> FiFo ist leer
 		}
-	char temp = UART0_rx.data[UART0_rx.read];				//FiFo Inhalt in Data schreiben
+	char c = UART0_rx.data[UART0_rx.read];				//FiFo Inhalt in Data schreiben
 	UART0_rx.read = (UART0_rx.read +1) & UART0_rx_mask;	//read auf nächste Speicherzelle schreiben
-	return temp;										//return Data
+	return c;										//return Data
 }
 
 int UART0_rx_empty(void)								//1 wenn FIFO leer, 0 wenn fifo voll
@@ -213,7 +211,7 @@ int UART0_rx_empty(void)								//1 wenn FIFO leer, 0 wenn fifo voll
 int UART0_rx_complete(void)
 {
 	//Wenn CR+LF empfangen wird, ist der Befehl vollständig
-	if(UART0_rx.data[(UART0_rx.write -2)&UART0_rx_mask] == 0x0D && UART0_rx.data[(UART0_rx.write-1)&UART0_rx_mask]==0x0A)
+	if(UART0_rx.data[(UART0_rx.write -(uint16_t)2)&UART0_rx_mask] == 0x0D && UART0_rx.data[(UART0_rx.write- (uint16_t)1)&UART0_rx_mask]==0x0A)
 	{
 		return 1;
 	}
@@ -245,7 +243,7 @@ int UART0_rx_work(int* Programmstatus)
 		j=1;
 		else
 		j=0;
-	}while(((Befehl[i+j-2] != (char)0x0D) || (Befehl[i-1] != (char)0x0A))&&(i<UART0_Befehl_FiFo));				// solange kein CR+LF erkannt wird
+	}while(((Befehl[i+j-2] != (char)0x0D) || (Befehl[i-1] != (char)0x0A))&&(i<10));				// solange kein CR+LF erkannt wird
 	
 	///////////////-------------------------------------------------------Hier stimmt etwas mit der Befehlsverarbeitung nicht! Der erste Befehl funktioniert nie
 	//Beginn der Befehlsauswertung
@@ -276,7 +274,7 @@ int UART0_rx_work(int* Programmstatus)
 		receivedData1 = Befehl[1];
 		*Programmstatus = 0x06;
 	}
-	if(Befehl[0]==0x08){ //initialisierung
+	if(Befehl[0]==0x08){
 		*Programmstatus = 0x08;
 	}
 	
@@ -308,9 +306,9 @@ char UART0_tx_out (void)
 		{
 		 return 0;
 		}
-	char temp=UART0_tx.data[UART0_tx.read];
+	char c=UART0_tx.data[UART0_tx.read];
 	UART0_tx.read = (UART0_tx.read +1) & UART0_tx_mask;
-	return temp;
+	return c;
 }
 
 

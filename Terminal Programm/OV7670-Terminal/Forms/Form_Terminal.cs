@@ -1164,22 +1164,12 @@ namespace OV7670_Terminal
                 ListViewToWrite.Items.Add(nEntry);
             }
             ListViewToWrite.EndUpdate();
-            //TODO: delete following
-            //ListToWrite.BeginUpdate();
-            //ListToWrite.Items.Clear();
-            //for (Byte i = 0; i < InterfaceToRead.AmountRegister; i++)
-            //{
-            //    ListToWrite.Items.Add(InterfaceToRead.SccbRegisterList[i].ToStringHex());
-            //}
-            //ListToWrite.EndUpdate();
         }
         private void compareLists(ListView ListToCompare, Ov7670Device _Camera)
         {
             SccbRegister RegisterToCompare;
             RegisterValue _address;
             RegisterValue _value;
-            //var CopyOfItemList = new object[ListToCompare.Items.Count];
-            //ListToCompare.Items.CopyTo(CopyOfItemList, 0);
 
             foreach (ListViewItem _entry in ListToCompare.Items)
             {
